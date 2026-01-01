@@ -1,12 +1,13 @@
 // API Service for ASH Player
 import { Platform } from 'react-native';
 
-// Use localhost for web, Android emulator IP for Android
-const API_BASE_URL = Platform.OS === 'web'
-    ? 'http://localhost:3001'
-    : 'http://10.0.2.2:3001';
-// For physical device, use your computer's IP address
-// const API_BASE_URL = 'http://YOUR_IP:3001';
+// Production API URL (deployed on Vercel)
+const PRODUCTION_API_URL = 'https://ash-player-native.vercel.app';
+
+// Use production URL for deployed app, localhost for development
+const API_BASE_URL = typeof __DEV__ !== 'undefined' && __DEV__
+    ? (Platform.OS === 'web' ? 'http://localhost:3001' : 'http://10.0.2.2:3001')
+    : PRODUCTION_API_URL;
 
 class ApiService {
     async getPlaylists() {
