@@ -131,9 +131,22 @@ function MainStack() {
     );
 }
 
-// Drawer Navigator with web-safe options
+// Drawer Navigator with responsive options
 function DrawerNavigator() {
-    const drawerType = Platform.OS === 'web' ? 'permanent' : 'front';
+    const [screenWidth, setScreenWidth] = React.useState(
+        require('react-native').Dimensions.get('window').width
+    );
+
+    React.useEffect(() => {
+        const subscription = require('react-native').Dimensions.addEventListener(
+            'change',
+            ({ window }) => setScreenWidth(window.width)
+        );
+        return () => subscription?.remove();
+    }, []);
+
+    // Use collapsible drawer on narrow screens (mobile), permanent on wide screens (desktop)
+    const drawerType = screenWidth > 768 ? 'permanent' : 'front';
 
     return (
         <Drawer.Navigator
@@ -145,7 +158,7 @@ function DrawerNavigator() {
                 headerTintColor: colors.textPrimary,
                 drawerStyle: {
                     backgroundColor: colors.bgSecondary,
-                    width: 280,
+                    width: Math.min(280, screenWidth * 0.8),
                 },
                 drawerActiveBackgroundColor: 'rgba(102, 126, 234, 0.2)',
                 drawerActiveTintColor: colors.accent,
